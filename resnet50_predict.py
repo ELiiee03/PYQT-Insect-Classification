@@ -1,17 +1,34 @@
-from keras.applications.resnet50 import ResNet50, preprocess_input # type: ignore
-from keras.preprocessing import image # type: ignore
+import torch
 import numpy as np
+from torchvision import transforms
+from PIL import Image
+from ResNet import ResNet50
 
-# Load the pre-trained ResNet-50 model
-model = ResNet50(weights='imagenet')
+# Define CIFAR-10 classes
+classes = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
+# Load the saved model
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = ResNet50(10).to(device)
+model.load_state_dict(torch.load('cifar10_resnet50.pth', map_location=device))
+model.eval()
+
+# Define transformations for CIFAR-10
+transform_test = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+])
 
 def predict_image(img_path):
     # Load and preprocess the image
-    img = image.load_img(img_path, target_size=(224, 224))
-    x = image.img_to_array(img)
-    x = np.expand_dims(x, axis=0)
-    x = preprocess_input(x)
+    image = Image.open(img_path).convert('RGB')
+    image = transform_test(image).unsqueeze(0).to(device)
 
-    # Make the prediction
-    preds = model.predict(x)
-    return preds
+    # Perform inference
+    with torch.no_grad():
+        outputs = model(image)
+        _, predicted = torch.max(outputs, 1)
+        predicted_class = classes[predicted.item()]
+
+    return [predicted_class]

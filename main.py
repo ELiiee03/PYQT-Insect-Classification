@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QFileDialog, QLabel, QVBoxLayout,
-    QHBoxLayout, QPushButton, QWidget, QScrollArea, QTabWidget
+    QHBoxLayout, QPushButton, QWidget, QScrollArea
 )
 from PyQt5.QtGui import QPixmap, QImage, QPalette, QColor
 from PyQt5.QtCore import Qt
@@ -21,7 +21,6 @@ class ImageViewer(QMainWindow):
         # Set the background color for the main window
         self.setStyleSheet("background-color: #c1bcc5")
 
-
         # Main layout
         self.main_layout = QHBoxLayout()
 
@@ -35,7 +34,6 @@ class ImageViewer(QMainWindow):
         self.btn_browse = QPushButton('Upload Insect Image')
         self.btn_browse.setStyleSheet(
             "background-color: #f48d03; font-size: 25px; font-weight: bold; color: black; padding: 20px; border-radius: 20px;"
-
         )
         self.btn_browse.clicked.connect(self.show_image)
         self.left_layout.addWidget(self.btn_browse)
@@ -52,7 +50,6 @@ class ImageViewer(QMainWindow):
         self.btn_exit = QPushButton('Exit')
         self.btn_exit.setStyleSheet(
             "background-color: #f48d03; font-size: 25px; font-weight: bold; color: black; padding: 20px; border-radius: 20px;"
-
         )
         self.btn_exit.clicked.connect(self.close)
         self.right_layout.addWidget(self.btn_exit)
